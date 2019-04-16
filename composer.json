@@ -9,7 +9,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Skyline\\Router" : "src"
+      "Skyline\\Router\\" : "src"
     }
   },
   "require" : {

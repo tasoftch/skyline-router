@@ -1,6 +1,6 @@
 {
-  "name": "tasoft/phpstorm-template",
-  "license": "MIT",
+  "name": "skyline/router",
+  "license": "BSD-3-Clause",
   "authors": [
     {
       "name": "Thomas Abplanalp",
@@ -9,7 +9,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "TASoft\\" : "src"
+      "Skyline\\Router" : "src"
     }
   },
   "require" : {

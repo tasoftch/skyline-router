@@ -32,29 +32,35 @@
  *
  */
 
-namespace Skyline\Router\Description;
+namespace Skyline\Router\HTTP;
 
+use Skyline\Router\Event\HTTPRequestRouteEvent;
+use Skyline\Router\Event\RouteEventInterface;
+use Skyline\Router\RouterInterface;
+use Symfony\Component\HttpFoundation\Request;
+use TASoft\EventManager\EventManagerInterface;
 
-class MutableActionDescription extends ActionDescription
+abstract class AbstractRouter implements RouterInterface
 {
-    public function __construct(string $actionControllerClass = "", string $methodName = "")
+    /**
+     * @inheritDoc
+     */
+    public function routeEvent(string $eventName, RouteEventInterface $event, EventManagerInterface $eventManager, ...$arguments)
     {
-        parent::__construct($actionControllerClass, $methodName);
+        if($event instanceof HTTPRequestRouteEvent) {
+            // Forward event
+            $this->routeRequest( $event->getRequest(), $event);
+        }
     }
 
     /**
-     * @param string $actionControllerClass
+     * This method should attempt to resolve the request into an action description.
+     * Partial action descriptions are possible, they will be passed to the next router on listener chain (default event manager behaviour).
+     * If routing was successful, stop event propagation.
+     *
+     * @param Request $request
+     * @param HTTPRequestRouteEvent $event
+     * @return void
      */
-    public function setActionControllerClass(string $actionControllerClass): void
-    {
-        $this->actionControllerClass = $actionControllerClass;
-    }
-
-    /**
-     * @param string $methodName
-     */
-    public function setMethodName(string $methodName): void
-    {
-        $this->methodName = $methodName;
-    }
+    abstract protected function routeRequest(Request $request, HTTPRequestRouteEvent $event);
 }

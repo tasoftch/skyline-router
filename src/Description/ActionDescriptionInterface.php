@@ -35,22 +35,23 @@
 namespace Skyline\Router\Description;
 
 /**
- * Describes which action of which module is routed
+ * Describes which action controller and method is used to perform the routed action
+ *
  * @package Skyline\Router\Description
  */
 interface ActionDescriptionInterface
 {
     /**
-     * The module name
+     * The class to instantiate action controller
      *
      * @return string
      */
-    public function getModuleName(): string;
+    public function getActionControllerClass(): string;
 
     /**
-     * The action name
+     * The method name
      *
      * @return string
      */
-    public function getActionName(): string;
+    public function getMethodName(): string;
 }

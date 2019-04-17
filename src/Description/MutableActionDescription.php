@@ -38,26 +38,18 @@ namespace Skyline\Router\Description;
 class MutableActionDescription extends ActionDescription
 {
     /**
-     * @param string $moduleName
+     * @param string $actionControllerClass
      */
-    public function setModuleName(string $moduleName): void
+    public function setActionControllerClass(string $actionControllerClass): void
     {
-        $this->moduleName = $moduleName;
+        $this->actionControllerClass = $actionControllerClass;
     }
 
     /**
-     * @param string $actionName
+     * @param string $methodName
      */
-    public function setActionName(string $actionName): void
+    public function setMethodName(string $methodName): void
     {
-        $this->actionName = $actionName;
-    }
-
-    /**
-     * @param array $capturedActionInfo
-     */
-    public function setCapturedActionInfo(array $capturedActionInfo): void
-    {
-        $this->capturedActionInfo = $capturedActionInfo;
+        $this->methodName = $methodName;
     }
 }

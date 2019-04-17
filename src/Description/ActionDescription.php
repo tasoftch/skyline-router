@@ -35,15 +35,38 @@
 namespace Skyline\Router\Description;
 
 
-class ActionDescription extends AbstractActionDescription
+abstract class ActionDescription implements ActionDescriptionInterface
 {
-    protected $capturedActionInfo = [];
+    /** @var string */
+    protected $actionControllerClass;
+    /** @var string */
+    protected $methodName;
 
     /**
-     * @return array
+     * AbstractActionDescription constructor.
+     * @param string $actionControllerClass
+     * @param string $methodName
      */
-    public function getCapturedActionInfo(): array
+    public function __construct(string $actionControllerClass, string $methodName)
     {
-        return $this->capturedActionInfo;
+        $this->actionControllerClass = $actionControllerClass;
+        $this->methodName = $methodName;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getActionControllerClass(): string
+    {
+        return $this->actionControllerClass;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMethodName(): string
+    {
+        return $this->methodName;
     }
 }

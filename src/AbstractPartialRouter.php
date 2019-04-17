@@ -106,7 +106,7 @@ abstract class AbstractPartialRouter implements RouterInterface
     /**
      * @inheritDoc
      */
-    public function routeEvent(string $eventName, RouteEventInterface $event, EventManagerInterface $eventManager, ...$arguments)
+    public function routeEvent(string $eventName, RouteEventInterface $event, ?EventManagerInterface $eventManager, ...$arguments)
     {
         $string = $this->getComparisonString($event);
         if(!$string)

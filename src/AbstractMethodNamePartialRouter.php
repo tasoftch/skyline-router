@@ -34,25 +34,37 @@
 
 namespace Skyline\Router;
 
-use Skyline\Router\Event\RouteEventInterface;
-use TASoft\EventManager\EventManagerInterface;
+
+use Skyline\Router\Description\MutableActionDescription;
 
 /**
- * Any class implementing this router interface is valid to assign requests to actions in Skyline CMS applications
+ * Default implementation to route information as full qualified method name
  *
  * @package Skyline\Router
  */
-interface RouterInterface
+abstract class AbstractMethodNamePartialRouter extends AbstractPartialRouter
 {
     /**
-     * Route the passed event to an action controller class and a method of it
-     * This method signature is valid to directly being called by the event manager.
+     * Default implementation routes a full qualified static class method call to an action description.
+     * @example Expected information string: Full\Qualified\ClassName\Of\ActionController::methodToCall
      *
-     * @param string $eventName
-     * @param RouteEventInterface $event
-     * @param EventManagerInterface|null $eventManager
-     * @param $arguments
-     * @return void
+     * @param $information
+     * @param MutableActionDescription $actionDescription
+     * @return bool
      */
-    public function routeEvent(string $eventName, RouteEventInterface $event, ?EventManagerInterface $eventManager, ...$arguments);
+    protected function routePartial($information, MutableActionDescription $actionDescription): bool
+    {
+        if(is_string($information)) {
+            $parts = explode("::", $information, 2);
+            if(count($parts) == 2) {
+                list($className, $method) = $parts;
+                $actionDescription->setActionControllerClass( trim($className) );
+                $actionDescription->setMethodName( trim($method) );
+
+                return $className && $method ? true : false;
+            }
+        }
+        trigger_error("Default partial routing implementation assumes a Full\\Qualified\\ClassName::withMethodToCall string", E_USER_NOTICE);
+        return false;
+    }
 }

@@ -46,7 +46,7 @@ interface RouterInterface
 {
     /**
      * Route the passed event to an action controller class and a method of it
-     * This method signature is valid to directly call by the event manager.
+     * This method signature is valid to directly being called by the event manager.
      *
      * @param string $eventName
      * @param RouteEventInterface $event

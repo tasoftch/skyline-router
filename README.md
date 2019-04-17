@@ -7,6 +7,6 @@ Register your routers as plugins to listen to the event manager.
 The default routing workflow is:
 - Application must create a route event
 - The route event is triggered
-- The routers need to route it to a module and action (by default, other behaviour possible using different packages)
-- The action gets resolved and will be performed.
+- The routers need to route it to an action controller and a method of it (by default, other behaviour possible using different packages)
+- The action controller gets created and the method will be executed
 

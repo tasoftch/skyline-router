@@ -35,6 +35,7 @@
 namespace Skyline\Router;
 
 use Skyline\Router\Event\RouteEventInterface;
+use TASoft\EventManager\EventManagerInterface;
 
 /**
  * Any class implementing this router interface is valid to assign requests to actions in Skyline CMS applications
@@ -44,10 +45,14 @@ use Skyline\Router\Event\RouteEventInterface;
 interface RouterInterface
 {
     /**
-     * Route the passed event to a module and an action.
+     * Route the passed event to an action controller class and a method of it
+     * This method signature is valid to directly call by the event manager.
      *
+     * @param string $eventName
      * @param RouteEventInterface $event
+     * @param EventManagerInterface $eventManager
+     * @param $arguments
      * @return void
      */
-    public function routeEvent(RouteEventInterface $event);
+    public function routeEvent(string $eventName, RouteEventInterface $event, EventManagerInterface $eventManager, ...$arguments);
 }

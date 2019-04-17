@@ -32,35 +32,30 @@
  *
  */
 
-namespace Skyline\Router\HTTP;
+/**
+ * LiteralURIRouterTest.php
+ * skyline-router
+ *
+ * Created on 2019-04-17 18:06 by thomas
+ */
 
+use PHPUnit\Framework\TestCase;
 use Skyline\Router\Event\HTTPRequestRouteEvent;
-use Skyline\Router\Event\RouteEventInterface;
-use Skyline\Router\RouterInterface;
+use Skyline\Router\HTTP\LiteralURIRouter;
 use Symfony\Component\HttpFoundation\Request;
-use TASoft\EventManager\EventManagerInterface;
 
-abstract class AbstractRouter implements RouterInterface
+class LiteralURIRouterTest extends TestCase
 {
-    /**
-     * @inheritDoc
-     */
-    public function routeEvent(string $eventName, RouteEventInterface $event, EventManagerInterface $eventManager, ...$arguments)
-    {
-        if($event instanceof HTTPRequestRouteEvent) {
-            // Forward event
-            $this->routeRequest( $event->getRequest(), $event);
-        }
-    }
+    public function testLiteralURI() {
 
-    /**
-     * This method should attempt to resolve the request into an action description.
-     * Partial action descriptions are possible, they will be passed to the next router on listener chain (default event manager behaviour).
-     * If routing was successful, stop event propagation.
-     *
-     * @param Request $request
-     * @param HTTPRequestRouteEvent $event
-     * @return void
-     */
-    abstract protected function routeRequest(Request $request, HTTPRequestRouteEvent $event);
+        $router = new LiteralURIRouter([
+            'my/uri' => '\\My\\Clazz::method'
+        ]);
+
+        $event = new HTTPRequestRouteEvent( Request::create("/my/uri") );
+        $router->routeEvent("event", $event, NULL);
+
+        $this->assertEquals("\\My\\Clazz", $event->getActionDescription()->getActionControllerClass());
+        $this->assertEquals("method", $event->getActionDescription()->getMethodName());
+    }
 }

@@ -35,7 +35,6 @@
 namespace Skyline\Router;
 
 
-use Skyline\Router\Description\ActionDescription;
 use Skyline\Router\Description\ActionDescriptionInterface;
 use Skyline\Router\Description\MutableActionDescription;
 use Skyline\Router\Description\MutableActionDescriptionInterface;

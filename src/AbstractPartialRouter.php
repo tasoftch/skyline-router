@@ -38,6 +38,7 @@ namespace Skyline\Router;
 use Skyline\Router\Description\ActionDescription;
 use Skyline\Router\Description\ActionDescriptionInterface;
 use Skyline\Router\Description\MutableActionDescription;
+use Skyline\Router\Description\MutableActionDescriptionInterface;
 use Skyline\Router\Event\RouteEventInterface;
 use TASoft\EventManager\EventManagerInterface;
 
@@ -81,7 +82,7 @@ abstract class AbstractPartialRouter implements RouterInterface
      * @param MutableActionDescription $actionDescription
      * @return bool
      */
-    abstract protected function routePartial($information, MutableActionDescription $actionDescription): bool;
+    abstract protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool;
 
     /**
      * Extracts a string from an event into a comparison string.
@@ -139,7 +140,7 @@ abstract class AbstractPartialRouter implements RouterInterface
 
         // Verify, that the action description IS mutable!
         $actionDescription = $event->getActionDescription();
-        if(!($actionDescription instanceof MutableActionDescription)) {
+        if(!($actionDescription instanceof MutableActionDescriptionInterface)) {
             $ac = $this->makeMutableActionDescription($actionDescription);
 
             if($actionDescription !== $ac && method_exists($event, 'setActionDescription'))

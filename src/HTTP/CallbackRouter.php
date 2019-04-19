@@ -43,7 +43,7 @@ use TASoft\EventManager\EventManagerInterface;
 /**
  * Class CallbackRouter redirects the routers info to a callback that is responsable to route all stuff into an action description
  *
- * The callback signature is: [bool] function ( mixed $routerInfoKey, mixed $routerInfoValue, Request $request, MutableActionDescriptionInterface $actionDescription )
+ * The callback signature is: [bool] function ( Request $request, MutableActionDescriptionInterface $actionDescription )
  *
  * @package Skyline\Router\HTTP
  */
@@ -57,9 +57,9 @@ class CallbackRouter extends AbstractMethodNamePartialRouter
      * @param callable $callback
      * @param iterable|NULL $routerInfo
      */
-    public function __construct(callable $callback, iterable $routerInfo = NULL)
+    public function __construct(callable $callback)
     {
-        parent::__construct($routerInfo);
+        parent::__construct([]);
         $this->callback = $callback;
     }
 
@@ -109,16 +109,11 @@ class CallbackRouter extends AbstractMethodNamePartialRouter
 
             $request = $event->getRequest();
 
-            foreach($this->getRouterInfo() as $key => $information) {
-                // Check, if comparison string matches
-                if($this->getCallback()($key, $information, $request, $actionDescription)) {
-                    // Stop routing process on success
-                    $event->stopPropagation();
-                    return;
-                }
+            if($this->getCallback()($request, $actionDescription)) {
+                // Stop routing process on success
+                $event->stopPropagation();
+                return;
             }
         }
     }
-
-
 }

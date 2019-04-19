@@ -35,6 +35,8 @@
 namespace Skyline\Router;
 
 
+use Skyline\Router\Description\ActionDescription;
+use Skyline\Router\Description\ActionDescriptionInterface;
 use Skyline\Router\Description\MutableActionDescription;
 use Skyline\Router\Event\RouteEventInterface;
 use TASoft\EventManager\EventManagerInterface;
@@ -103,6 +105,29 @@ abstract class AbstractPartialRouter implements RouterInterface
      */
     abstract protected function doesStringMatch(string $comparisonString, $routerInfoKey, &$information): bool;
 
+
+    /**
+     * Used by default implementation to specify a default mutable action description class
+     * @return string
+     */
+    protected function getMutableActionDescriptionClass(): string {
+        return MutableActionDescription::class;
+    }
+
+    /**
+     * Called, if the events action description is not mutable.
+     *
+     * @param ActionDescriptionInterface|null $actionDescription
+     * @return ActionDescriptionInterface
+     */
+    protected function makeMutableActionDescription(?ActionDescriptionInterface $actionDescription): ActionDescriptionInterface {
+        $class = $this->getMutableActionDescriptionClass();
+
+        return is_object($actionDescription) ?
+            new $class( $actionDescription->getActionControllerClass(), $actionDescription->getMethodName() ) :
+            new $class();
+    }
+
     /**
      * @inheritDoc
      */
@@ -115,12 +140,12 @@ abstract class AbstractPartialRouter implements RouterInterface
         // Verify, that the action description IS mutable!
         $actionDescription = $event->getActionDescription();
         if(!($actionDescription instanceof MutableActionDescription)) {
-            $actionDescription = is_object($actionDescription) ?
-                new MutableActionDescription( $actionDescription->getActionControllerClass(), $actionDescription->getMethodName() ) :
-                new MutableActionDescription();
+            $ac = $this->makeMutableActionDescription($actionDescription);
 
-            if(method_exists($event, 'setActionDescription'))
-                $event->setActionDescription($actionDescription);
+            if($actionDescription !== $ac && method_exists($event, 'setActionDescription'))
+                $event->setActionDescription($ac);
+
+            $actionDescription = $ac;
         }
 
 

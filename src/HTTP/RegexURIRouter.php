@@ -34,6 +34,9 @@
 
 namespace Skyline\Router\HTTP;
 
+use Skyline\Router\Description\MutableActionDescriptionInterface;
+use Skyline\Router\Description\MutableRegexActionDescription;
+
 /**
  * Routing information keys are PREG patterns that need to match.
  * Captures are replaced in keys value using preg_replace function.
@@ -45,14 +48,44 @@ namespace Skyline\Router\HTTP;
  */
 class RegexURIRouter extends LiteralURIRouter
 {
+    /**
+     * @inheritDoc
+     */
+    protected function getMutableActionDescriptionClass(): string
+    {
+        return MutableRegexActionDescription::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function doesStringMatch(string $comparisonString, $routerInfoKey, &$information): bool
     {
         if(preg_match($routerInfoKey, $comparisonString, $matches)) {
-            $information = preg_replace_callback("/\\$(\d+)/i", function($tag) use ($matches) {
+            // Pack matches into information to resolve in self::routePartial
+            $information = [
+                preg_replace_callback("/\\$(\d+)/i", function($tag) use ($matches) {
                 $idx = $tag[1] * 1;
                 return $matches[$idx] ?? $tag[0];
-            }, $information);
+            }, $information)
+                , $matches
+            ];
+            return true;
         }
         return false;
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
+    {
+        list($information, $matches) = $information;
+        if($actionDescription instanceof MutableRegexActionDescription)
+            $actionDescription->setCaptures($matches);
+
+        return parent::routePartial($information, $actionDescription);
+    }
+
+
 }

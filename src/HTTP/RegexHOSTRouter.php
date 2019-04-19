@@ -38,8 +38,15 @@ namespace Skyline\Router\HTTP;
 use Skyline\Router\Event\HTTPRequestRouteEvent;
 use Skyline\Router\Event\RouteEventInterface;
 
+/**
+ * Class RegexHOSTRouter has the same affect as URI regex router but it will route for the requests host.
+ * @package Skyline\Router\HTTP
+ */
 class RegexHOSTRouter extends RegexURIRouter
 {
+    /**
+     * @inheritDoc
+     */
     protected function getComparisonString(RouteEventInterface $event): ?string
     {
         if($event instanceof HTTPRequestRouteEvent) {

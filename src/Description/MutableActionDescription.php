@@ -35,7 +35,7 @@
 namespace Skyline\Router\Description;
 
 
-class MutableActionDescription extends ActionDescription
+class MutableActionDescription extends ActionDescription implements MutableActionDescriptionInterface
 {
     public function __construct(string $actionControllerClass = "", string $methodName = "")
     {

@@ -36,6 +36,7 @@ namespace Skyline\Router;
 
 
 use Skyline\Router\Description\MutableActionDescription;
+use Skyline\Router\Description\MutableActionDescriptionInterface;
 
 /**
  * Default implementation to route information as full qualified method name
@@ -52,7 +53,7 @@ abstract class AbstractMethodNamePartialRouter extends AbstractPartialRouter
      * @param MutableActionDescription $actionDescription
      * @return bool
      */
-    protected function routePartial($information, MutableActionDescription $actionDescription): bool
+    protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
     {
         if(is_string($information)) {
             $parts = explode("::", $information, 2);

@@ -32,26 +32,37 @@
  *
  */
 
-namespace Skyline\Router\HTTP;
-
-
-use Skyline\Router\Event\HTTPRequestRouteEvent;
-use Skyline\Router\Event\RouteEventInterface;
-
 /**
- * Router info must match to HOST of a request
- * @package Skyline\Router\HTTP
+ * RegexHOSTTest.php
+ * skyline-router
+ *
+ * Created on 2019-04-19 11:54 by thomas
  */
-class LiteralHOSTRouter extends LiteralURIRouter
+
+use PHPUnit\Framework\TestCase;
+use Skyline\Router\Event\HTTPRequestRouteEvent;
+use Skyline\Router\HTTP\RegexHOSTRouter;
+use Symfony\Component\HttpFoundation\Request;
+
+class RegexHOSTTest extends TestCase
 {
-    /**
-     * @inheritDoc
-     */
-    protected function getComparisonString(RouteEventInterface $event): ?string
-    {
-        if($event instanceof HTTPRequestRouteEvent) {
-            return $event->getRequest()->getHost();
-        }
-        return NULL;
+    public function testLiteralHost() {
+        $router = new RegexHOSTRouter([
+            '%(dev|admin)\.tasoft\.ch%i' => '\\My\\Clazz::method',
+            "%(www|open)\.tasoft\.ch%i" => '\\My\\Clazz::otherMethod',
+        ]);
+
+        $event = new HTTPRequestRouteEvent( Request::create("http://www.tasoft.ch/my/uri") );
+        $router->routeEvent("event", $event, NULL);
+
+        $this->assertEquals("\\My\\Clazz", $event->getActionDescription()->getActionControllerClass());
+        $this->assertEquals("otherMethod", $event->getActionDescription()->getMethodName());
+
+
+        $event = new HTTPRequestRouteEvent( Request::create("https://dev.tasoft.ch/my/uri") );
+        $router->routeEvent("event", $event, NULL);
+
+        $this->assertEquals("\\My\\Clazz", $event->getActionDescription()->getActionControllerClass());
+        $this->assertEquals("method", $event->getActionDescription()->getMethodName());
     }
 }

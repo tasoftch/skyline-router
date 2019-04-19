@@ -36,26 +36,88 @@ namespace Skyline\Router\HTTP;
 
 
 use Skyline\Router\AbstractMethodNamePartialRouter;
+use Skyline\Router\Event\HTTPRequestRouteEvent;
 use Skyline\Router\Event\RouteEventInterface;
 use TASoft\EventManager\EventManagerInterface;
 
-class GlobalAdminRouter extends AbstractMethodNamePartialRouter
+/**
+ * Class CallbackRouter redirects the routers info to a callback that is responsable to route all stuff into an action description
+ *
+ * The callback signature is: [bool] function ( mixed $routerInfoKey, mixed $routerInfoValue, Request $request, MutableActionDescriptionInterface $actionDescription )
+ *
+ * @package Skyline\Router\HTTP
+ */
+class CallbackRouter extends AbstractMethodNamePartialRouter
 {
+    /** @var callable */
+    private $callback;
+
+    /**
+     * CallbackRouter constructor.
+     * @param callable $callback
+     * @param iterable|NULL $routerInfo
+     */
+    public function __construct(callable $callback, iterable $routerInfo = NULL)
+    {
+        parent::__construct($routerInfo);
+        $this->callback = $callback;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getCallback(): callable
+    {
+        return $this->callback;
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function getComparisonString(RouteEventInterface $event): ?string
     {
-        // Class will not invoke this method.
+        // won't be called
         return NULL;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function doesStringMatch(string $comparisonString, $routerInfoKey, &$information): bool
     {
-        // Class will not invoke this method.
+        // won't be called
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function routeEvent(string $eventName, RouteEventInterface $event, ?EventManagerInterface $eventManager, ...$arguments)
     {
+        if(is_callable($this->getCallback()) && $event instanceof HTTPRequestRouteEvent) {
+            $actionDescription = $event->getActionDescription();
+            $class = $this->getMutableActionDescriptionClass();
 
+            if(!($actionDescription instanceof $class)) {
+                $ac = $this->makeMutableActionDescription($actionDescription);
+
+                if($actionDescription !== $ac && method_exists($event, 'setActionDescription'))
+                    $event->setActionDescription($ac);
+
+                $actionDescription = $ac;
+            }
+
+            $request = $event->getRequest();
+
+            foreach($this->getRouterInfo() as $key => $information) {
+                // Check, if comparison string matches
+                if($this->getCallback()($key, $information, $request, $actionDescription)) {
+                    // Stop routing process on success
+                    $event->stopPropagation();
+                    return;
+                }
+            }
+        }
     }
 
 

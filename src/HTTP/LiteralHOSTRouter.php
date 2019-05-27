@@ -42,7 +42,7 @@ use Skyline\Router\Event\RouteEventInterface;
  * Router info must match to HOST of a request
  * @package Skyline\Router\HTTP
  */
-class LiteralHOSTRouter extends LiteralURIAssignmentRouter
+class LiteralHOSTRouter extends LiteralURIRouter
 {
     /**
      * @inheritDoc

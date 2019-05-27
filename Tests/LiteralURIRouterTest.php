@@ -41,14 +41,14 @@
 
 use PHPUnit\Framework\TestCase;
 use Skyline\Router\Event\HTTPRequestRouteEvent;
-use Skyline\Router\HTTP\LiteralURIAssignmentRouter;
+use Skyline\Router\HTTP\LiteralURIRouter;
 use Symfony\Component\HttpFoundation\Request;
 
 class LiteralURIRouterTest extends TestCase
 {
     public function testLiteralURI() {
 
-        $router = new LiteralURIAssignmentRouter([
+        $router = new LiteralURIRouter([
             'my/uri' => '\\My\\Clazz::method'
         ]);
 

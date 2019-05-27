@@ -47,7 +47,7 @@ use TASoft\EventManager\EventManagerInterface;
  *
  * @package Skyline\Router\HTTP
  */
-class CallbackAssignmentRouter extends AbstractPartialAssignmentRouter
+class CallbackRouter extends AbstractPartialAssignmentRouter
 {
     /** @var callable */
     private $callback;

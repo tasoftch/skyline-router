@@ -38,7 +38,7 @@ namespace Skyline\Router\HTTP;
 use Skyline\Router\Event\HTTPRequestRouteEvent;
 use Skyline\Router\Event\RouteEventInterface;
 
-class LiteralContentTypeRouter extends LiteralURIAssignmentRouter
+class LiteralContentTypeRouter extends LiteralURIRouter
 {
     protected function getComparisonString(RouteEventInterface $event): ?string
     {

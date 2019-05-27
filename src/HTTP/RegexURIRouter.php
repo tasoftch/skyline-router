@@ -46,7 +46,7 @@ use Skyline\Router\Description\MutableRegexActionDescription;
  *
  * @package Skyline\Router\HTTP
  */
-class RegexURIRouter extends LiteralURIAssignmentRouter
+class RegexURIRouter extends LiteralURIRouter
 {
     /**
      * @inheritDoc

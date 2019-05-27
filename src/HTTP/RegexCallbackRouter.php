@@ -36,7 +36,7 @@ namespace Skyline\Router\HTTP;
 
 use Skyline\Router\Description\MutableRegexActionDescription;
 
-class RegexCallbackRouter extends CallbackAssignmentRouter
+class RegexCallbackRouter extends CallbackRouter
 {
     protected function getMutableActionDescriptionClass(): string
     {

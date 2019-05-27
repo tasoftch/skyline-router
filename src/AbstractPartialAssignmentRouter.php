@@ -32,60 +32,63 @@
  *
  */
 
-namespace Skyline\Router\HTTP;
+namespace Skyline\Router;
 
+
+use Skyline\Router\Description\MutableActionDescription;
 use Skyline\Router\Description\MutableActionDescriptionInterface;
-use Skyline\Router\Description\MutableRegexActionDescription;
+use Skyline\Router\PartialAssigner\PartialAssignerInterface;
+use TASoft\Collection\PriorityCollection;
 
 /**
- * Routing information keys are PREG patterns that need to match.
- * Captures are replaced in keys value using preg_replace function.
- * @example [
- *      '%/?my/URI-(about|home|news)%i' => '\My\ActionController::deliver$1' // can resolve to \My\ActionController::deliverabout, \My\ActionController::deliverhome or \My\ActionController::delivernews
- * ]
+ * Default implementation to distribute partial routings between assigners
  *
- * @package Skyline\Router\HTTP
+ * @package Skyline\Router
  */
-class RegexURIRouter extends LiteralURIAssignmentRouter
+abstract class AbstractPartialAssignmentRouter extends AbstractPartialRouter
 {
-    /**
-     * @inheritDoc
-     */
-    protected function getMutableActionDescriptionClass(): string
+    /** @var PriorityCollection */
+    private $assigners;
+
+    public function __construct(iterable $routerInfo = NULL)
     {
-        return MutableRegexActionDescription::class;
+        parent::__construct($routerInfo);
+        $this->assigners = new PriorityCollection();
     }
 
     /**
-     * @inheritDoc
+     * Adds an assigner to the router
+     *
+     * @param PartialAssignerInterface $assigner
+     * @param int $priority
      */
-    protected function doesStringMatch(string $comparisonString, $routerInfoKey, &$information): bool
-    {
-        if(preg_match($routerInfoKey, $comparisonString, $matches)) {
-            // Pack matches into information to resolve in self::routePartial
-            $information = [
-                preg_replace_callback("/\\$(\d+)/i", function($tag) use ($matches) {
-                $idx = $tag[1] * 1;
-                return $matches[$idx] ?? $tag[0];
-            }, $information)
-                , $matches
-            ];
-            return true;
-        }
-        return false;
+    public function addAssigner(PartialAssignerInterface $assigner, int $priority = 0) {
+        $this->assigners->add($priority, $assigner);
     }
 
     /**
-     * @inheritDoc
+     * Removes an assigner
+     *
+     * @param PartialAssignerInterface $assigner
+     */
+    public function removeAssigner(PartialAssignerInterface $assigner) {
+        $this->assigners->remove($assigner);
+    }
+
+    /**
+     *
+     *
+     * @param $information
+     * @param MutableActionDescription $actionDescription
+     * @return bool
      */
     protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
     {
-        list($information, $matches) = $information;
-        if($actionDescription instanceof MutableRegexActionDescription)
-            $actionDescription->setCaptures($matches);
-
-        return parent::routePartial($information, $actionDescription);
+        /** @var PartialAssignerInterface $assigner */
+        foreach($this->assigners->getOrderedElements() as $assigner) {
+            if($assigner->routePartial($information, $actionDescription))
+                return true;
+        }
+        return false;
     }
-
-
 }

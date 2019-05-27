@@ -32,18 +32,13 @@
  *
  */
 
-namespace Skyline\Router;
+namespace Skyline\Router\PartialAssigner;
 
 
 use Skyline\Router\Description\MutableActionDescription;
 use Skyline\Router\Description\MutableActionDescriptionInterface;
 
-/**
- * Default implementation to route information as full qualified method name
- *
- * @package Skyline\Router
- */
-abstract class AbstractMethodNamePartialRouter extends AbstractPartialRouter
+class ControllerAndMethodNameAssigner implements PartialAssignerInterface
 {
     /**
      * Default implementation routes a full qualified static class method call to an action description.
@@ -53,7 +48,7 @@ abstract class AbstractMethodNamePartialRouter extends AbstractPartialRouter
      * @param MutableActionDescription $actionDescription
      * @return bool
      */
-    protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
+    public function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
     {
         if(is_string($information)) {
             $parts = explode("::", $information, 2);
@@ -63,10 +58,8 @@ abstract class AbstractMethodNamePartialRouter extends AbstractPartialRouter
                 $actionDescription->setMethodName( trim($method) );
 
                 return $className && $method ? true : false;
-            } else {
-                $actionDescription->setActionControllerClass( trim($parts[0]) );
-                return false;
             }
         }
+        return false;
     }
 }

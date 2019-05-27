@@ -35,7 +35,7 @@
 namespace Skyline\Router\HTTP;
 
 
-use Skyline\Router\AbstractMethodNamePartialRouter;
+use Skyline\Router\AbstractPartialAssignmentRouter;
 use Skyline\Router\Event\HTTPRequestRouteEvent;
 use Skyline\Router\Event\RouteEventInterface;
 use TASoft\EventManager\EventManagerInterface;
@@ -47,7 +47,7 @@ use TASoft\EventManager\EventManagerInterface;
  *
  * @package Skyline\Router\HTTP
  */
-class CallbackRouter extends AbstractMethodNamePartialRouter
+class CallbackAssignmentRouter extends AbstractPartialAssignmentRouter
 {
     /** @var callable */
     private $callback;

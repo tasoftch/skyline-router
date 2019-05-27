@@ -35,11 +35,11 @@
 namespace Skyline\Router\HTTP;
 
 
-use Skyline\Router\AbstractMethodNamePartialRouter;
+use Skyline\Router\AbstractPartialAssignmentRouter;
 use Skyline\Router\Event\HTTPRequestRouteEvent;
 use Skyline\Router\Event\RouteEventInterface;
 
-class LiteralURIRouter extends AbstractMethodNamePartialRouter
+class LiteralURIAssignmentRouter extends AbstractPartialAssignmentRouter
 {
     /** @var int Removes leading URI slashes => /admin/file.html gets admin/file.html */
     const OPT_STRIP_SLASH = 1 << 0;

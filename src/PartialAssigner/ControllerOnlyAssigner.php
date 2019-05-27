@@ -32,30 +32,28 @@
  *
  */
 
-/**
- * LiteralURIRouterTest.php
- * skyline-router
- *
- * Created on 2019-04-17 18:06 by thomas
- */
+namespace Skyline\Router\PartialAssigner;
 
-use PHPUnit\Framework\TestCase;
-use Skyline\Router\Event\HTTPRequestRouteEvent;
-use Skyline\Router\HTTP\LiteralURIAssignmentRouter;
-use Symfony\Component\HttpFoundation\Request;
 
-class LiteralURIRouterTest extends TestCase
+use Skyline\Router\Description\MutableActionDescriptionInterface;
+
+class ControllerOnlyAssigner implements PartialAssignerInterface
 {
-    public function testLiteralURI() {
+    /**
+     * @inheritDoc
+     */
+    public function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
+    {
+        if(is_string($information)) {
+            $parts = explode("::", $information, 2);
+            if(count($parts) == 2) {
+                list($className, $method) = $parts;
+                $actionDescription->setActionControllerClass( trim($className) );
 
-        $router = new LiteralURIAssignmentRouter([
-            'my/uri' => '\\My\\Clazz::method'
-        ]);
-
-        $event = new HTTPRequestRouteEvent( Request::create("/my/uri") );
-        $router->routeEvent("event", $event, NULL);
-
-        $this->assertEquals("\\My\\Clazz", $event->getActionDescription()->getActionControllerClass());
-        $this->assertEquals("method", $event->getActionDescription()->getMethodName());
+                return $className ? true : false;
+            }
+        }
+        return false;
     }
+
 }

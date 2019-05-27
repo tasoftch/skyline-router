@@ -50,7 +50,7 @@ class ControllerOnlyAssigner implements PartialAssignerInterface
                 list($className, $method) = $parts;
                 $actionDescription->setActionControllerClass( trim($className) );
 
-                return $className ? true : false;
+                return $className && $actionDescription->getMethodName() ? true : false;
             }
         }
         return false;

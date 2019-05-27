@@ -63,9 +63,10 @@ abstract class AbstractMethodNamePartialRouter extends AbstractPartialRouter
                 $actionDescription->setMethodName( trim($method) );
 
                 return $className && $method ? true : false;
+            } else {
+                $actionDescription->setActionControllerClass( trim($parts[0]) );
+                return false;
             }
         }
-        trigger_error("Default partial routing implementation assumes a Full\\Qualified\\ClassName::withMethodToCall string", E_USER_NOTICE);
-        return false;
     }
 }

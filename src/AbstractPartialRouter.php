@@ -139,9 +139,8 @@ abstract class AbstractPartialRouter implements RouterInterface
 
         // Verify, that the action description IS mutable!
         $actionDescription = $event->getActionDescription();
-        $class = $this->getMutableActionDescriptionClass();
 
-        if(!($actionDescription instanceof $class)) {
+        if(!($actionDescription instanceof MutableActionDescriptionInterface)) {
             $ac = $this->makeMutableActionDescription($actionDescription);
 
             if($actionDescription !== $ac && method_exists($event, 'setActionDescription'))

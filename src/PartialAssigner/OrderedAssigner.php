@@ -32,49 +32,36 @@
  *
  */
 
-namespace Skyline\Router;
+namespace Skyline\Router\PartialAssigner;
 
 
-use Skyline\Router\Description\MutableActionDescription;
 use Skyline\Router\Description\MutableActionDescriptionInterface;
-use Skyline\Router\PartialAssigner\PartialAssignerInterface;
-use TASoft\Collection\PriorityCollection;
 
-/**
- * Default implementation to distribute partial routings between assigners
- *
- * @package Skyline\Router
- */
-abstract class AbstractPartialAssignmentRouter extends AbstractPartialRouter
+class OrderedAssigner implements PartialAssignerInterface
 {
-    /** @var PartialAssignerInterface */
-    private $assigner;
+    /** @var PartialAssignerInterface[] */
+    private $assigners = [];
 
-    /**
-     * @return PartialAssignerInterface
-     */
-    public function getAssigner(): PartialAssignerInterface
+    public function addAssigner(PartialAssignerInterface $assigner) {
+        if(!in_array($assigner, $this->assigners))
+            $this->assigners[] = $assigner;
+    }
+
+
+    public function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
     {
-        return $this->assigner;
+        foreach($this->getAssigners() as $assigner) {
+            if($assigner->routePartial($information, $actionDescription))
+                return true;
+        }
+        return false;
     }
 
     /**
-     * @param PartialAssignerInterface $assigner
+     * @return PartialAssignerInterface[]
      */
-    public function setAssigner(PartialAssignerInterface $assigner): void
+    public function getAssigners(): array
     {
-        $this->assigner = $assigner;
-    }
-
-    /**
-     *
-     *
-     * @param $information
-     * @param MutableActionDescription $actionDescription
-     * @return bool
-     */
-    protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
-    {
-        return $this->getAssigner()->routePartial($information, $actionDescription);
+        return $this->assigners;
     }
 }

@@ -32,49 +32,50 @@
  *
  */
 
-namespace Skyline\Router;
+namespace Skyline\Router\PartialAssigner;
 
 
-use Skyline\Router\Description\MutableActionDescription;
 use Skyline\Router\Description\MutableActionDescriptionInterface;
-use Skyline\Router\PartialAssigner\PartialAssignerInterface;
 use TASoft\Collection\PriorityCollection;
 
-/**
- * Default implementation to distribute partial routings between assigners
- *
- * @package Skyline\Router
- */
-abstract class AbstractPartialAssignmentRouter extends AbstractPartialRouter
+class PriorityAssigner implements PartialAssignerInterface
 {
-    /** @var PartialAssignerInterface */
-    private $assigner;
+    private $collection;
 
-    /**
-     * @return PartialAssignerInterface
-     */
-    public function getAssigner(): PartialAssignerInterface
+    public function __construct()
     {
-        return $this->assigner;
+        $this->collection = new PriorityCollection();
     }
 
     /**
+     * @inheritDoc
+     */
+    public function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
+    {
+        /** @var PartialAssignerInterface $assigner */
+        foreach($this->collection->getOrderedElements() as $assigner) {
+            if($assigner->routePartial($information, $actionDescription))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Adds an assigner to the list
+     *
+     * @param PartialAssignerInterface $assigner
+     * @param int $priority
+     */
+    public function addAssigner(PartialAssignerInterface $assigner, int $priority = 0) {
+        $this->collection->add($priority, $assigner);
+    }
+
+    /**
+     * Removes an assigner from receiver
+     *
      * @param PartialAssignerInterface $assigner
      */
-    public function setAssigner(PartialAssignerInterface $assigner): void
-    {
-        $this->assigner = $assigner;
-    }
-
-    /**
-     *
-     *
-     * @param $information
-     * @param MutableActionDescription $actionDescription
-     * @return bool
-     */
-    protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
-    {
-        return $this->getAssigner()->routePartial($information, $actionDescription);
+    public function removeAssigner(PartialAssignerInterface $assigner) {
+        $this->collection->remove($assigner);
     }
 }

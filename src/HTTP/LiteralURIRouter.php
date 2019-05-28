@@ -95,7 +95,7 @@ class LiteralURIRouter extends AbstractPartialAssignmentRouter
             if($opts & self::OPT_IGNORE_FRAGMENT) {
                 $URI = explode("#", $URI, 2)[0];
             }
-            return $URI;
+            return $URI ?: "/";
         }
         return NULL;
     }

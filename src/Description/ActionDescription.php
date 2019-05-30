@@ -35,7 +35,7 @@
 namespace Skyline\Router\Description;
 
 
-abstract class ActionDescription implements ActionDescriptionInterface
+class ActionDescription implements ActionDescriptionInterface
 {
     /** @var string */
     protected $actionControllerClass;

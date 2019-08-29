@@ -81,7 +81,7 @@ class RegexURIRouter extends LiteralURIRouter
     protected function routePartial($information, MutableActionDescriptionInterface $actionDescription): bool
     {
         list($information, $matches) = $information;
-        if($actionDescription instanceof MutableRegexActionDescription)
+        if(method_exists($actionDescription, 'setCaptures'))
             $actionDescription->setCaptures($matches);
 
         return parent::routePartial($information, $actionDescription);

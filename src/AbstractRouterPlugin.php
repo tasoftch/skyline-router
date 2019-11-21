@@ -51,4 +51,5 @@ abstract class AbstractRouterPlugin implements PluginFactoryInterface
     const ROUTED_CONTROLLER_KEY = 'controller';
     const ROUTED_METHOD_KEY = 'method';
     const ROUTED_RENDER_KEY = 'render';
+    const ROUTED_MODULE_KEY = 'module';
 }

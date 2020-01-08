@@ -85,7 +85,7 @@ class LiteralURIRouter extends AbstractPartialAssignmentRouter
 
             $opts = $this->getOptions();
 
-            if(($opts & self::OPT_STRIP_SLASH) && $URI[0] == '/')
+            if(($opts & self::OPT_STRIP_SLASH) && isset($URI[0]) && $URI[0] == '/')
                 $URI = substr($URI, 1);
 
             if($opts & self::OPT_IGNORE_QUERY) {

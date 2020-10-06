@@ -35,7 +35,9 @@
 namespace Skyline\Router\Description;
 
 
-class RegexActionDescription extends ActionDescription
+use ArrayAccess;
+
+class RegexActionDescription extends ActionDescription implements ArrayAccess
 {
     /** @var array|null */
     protected $captures;
@@ -59,4 +61,22 @@ class RegexActionDescription extends ActionDescription
     {
         return $this->captures;
     }
+
+	public function offsetExists($offset)
+	{
+		return isset($this->captures[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->captures[$offset] ?? NULL;
+	}
+
+	public function offsetSet($offset, $value)
+	{
+	}
+
+	public function offsetUnset($offset)
+	{
+	}
 }

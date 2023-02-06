@@ -62,21 +62,21 @@ class RegexActionDescription extends ActionDescription implements ArrayAccess
         return $this->captures;
     }
 
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool
 	{
 		return isset($this->captures[$offset]);
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		return $this->captures[$offset] ?? NULL;
 	}
 
-	public function offsetSet($offset, $value)
+	public function offsetSet($offset, $value): void
 	{
 	}
 
-	public function offsetUnset($offset)
+	public function offsetUnset($offset): void
 	{
 	}
 }
